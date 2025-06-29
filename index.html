@@ -3,158 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เครื่องคำนวณราคายาเบิกจ่ายกรมบัญชีกลาง</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>โปรแกรมคำนวณราคายาเบิกจ่ายกรมบัญชีกลาง</title>
     <style>
-        /* กำหนด font-family เป็น Inter สำหรับข้อความทั้งหมด */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e9f5ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .result h2 {
+            margin: 0;
+            color: #0056b3;
+            font-size: 24px;
+        }
+         .result p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">
-            เครื่องคำนวณราคายาเบิกจ่ายกรมบัญชีกลาง
-        </h1>
+<body>
 
-        <!-- ส่วนสำหรับเลือกประเภทราคา -->
-        <div class="mb-5">
-            <label class="block text-gray-700 text-sm font-semibold mb-2">
-                เลือกประเภทราคา:
-            </label>
-            <div class="flex items-center space-x-4">
-                <label class="inline-flex items-center">
-                    <input type="radio" id="excludeVat" name="priceType" value="excludeVat" class="form-radio text-blue-600 rounded-full" checked>
-                    <span class="ml-2 text-gray-700">ราคาต้นทุน (ไม่รวม VAT 7%)</span>
-                </label>
-                <label class="inline-flex items-center">
-                    <input type="radio" id="includeVat" name="priceType" value="includeVat" class="form-radio text-blue-600 rounded-full">
-                    <span class="ml-2 text-gray-700">ราคาต้นทุน (รวม VAT แล้ว)</span>
-                </label>
-            </div>
+    <div class="container">
+        <h1>โปรแกรมคำนวณราคายาเบิกจ่าย (กรมบัญชีกลาง)</h1>
+        
+        <div class="input-group">
+            <label for="cost-no-vat">กรอกราคาต้นทุน (ยังไม่รวม VAT 7%)</label>
+            <input type="number" id="cost-no-vat" placeholder="เช่น 100">
+        </div>
+        
+        <p style="text-align:center; margin:-10px 0 10px 0; font-weight:bold;">หรือ</p>
+
+        <div class="input-group">
+            <label for="cost-with-vat">กรอกราคาต้นทุน (รวม VAT 7% แล้ว)</label>
+            <input type="number" id="cost-with-vat" placeholder="เช่น 107">
         </div>
 
-        <!-- ส่วนสำหรับกรอกราคาทุนยา -->
-        <div class="mb-6">
-            <label for="costPrice" class="block text-gray-700 text-sm font-semibold mb-2">
-                ราคาทุนยา:
-            </label>
-            <input
-                type="number"
-                id="costPrice"
-                step="0.01"
-                placeholder="กรุณาใส่ราคาทุนยา"
-                class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-            />
+        <button onclick="calculatePrice()">คำนวณราคาเบิกจ่าย</button>
+
+        <div class="result" id="result-display" style="display: none;">
+            <p>ราคาเบิกจ่ายที่คำนวณได้คือ:</p>
+            <h2 id="final-price"></h2>
         </div>
-
-        <!-- ปุ่มสำหรับคำนวณ -->
-        <button
-            id="calculateBtn"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg w-full focus:outline-none focus:shadow-outline transition duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-        >
-            คำนวณราคาเบิกจ่าย
-        </button>
-
-        <!-- ส่วนแสดงผลลัพธ์ -->
-        <div class="mt-8 pt-6 border-t border-gray-200 text-center">
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">
-                ราคาเบิกจ่ายกรมบัญชีกลาง:
-            </h2>
-            <p id="reimbursementPrice" class="text-5xl font-extrabold text-green-600 animate-pulse">
-                --
-            </p>
-            <p id="errorMessage" class="text-red-500 text-sm mt-2 hidden">
-                กรุณาใส่ราคาทุนยาที่ถูกต้อง
-            </p>
+        
+        <div class="footer-note">
+            <p><strong>ข้อควรระวัง:</strong> โปรแกรมนี้จัดทำขึ้นเพื่อความสะดวกตามสูตรที่ระบุเท่านั้น <br>กรุณาตรวจสอบกับระเบียบและหลักเกณฑ์ล่าสุดของกรมบัญชีกลางอีกครั้งก่อนการใช้งานจริง</p>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ดึงองค์ประกอบ DOM ที่จำเป็น
-            const costPriceInput = document.getElementById('costPrice');
-            const excludeVatRadio = document.getElementById('excludeVat');
-            const includeVatRadio = document.getElementById('includeVat');
-            const calculateBtn = document.getElementById('calculateBtn');
-            const reimbursementPriceDisplay = document.getElementById('reimbursementPrice');
-            const errorMessageDisplay = document.getElementById('errorMessage');
+        function calculatePrice() {
+            const costNoVatInput = document.getElementById('cost-no-vat');
+            const costWithVatInput = document.getElementById('cost-with-vat');
+            
+            let costNoVat = parseFloat(costNoVatInput.value);
+            let costWithVat = parseFloat(costWithVatInput.value);
+            
+            let costA12 = 0;
 
-            // เพิ่ม Event Listener สำหรับปุ่มคำนวณ
-            calculateBtn.addEventListener('click', calculateReimbursement);
-
-            /**
-             * ฟังก์ชันหลักสำหรับคำนวณราคาเบิกจ่าย
-             */
-            function calculateReimbursement() {
-                // ซ่อนข้อความแสดงข้อผิดพลาดก่อนเริ่มการคำนวณใหม่
-                errorMessageDisplay.classList.add('hidden');
-                reimbursementPriceDisplay.classList.remove('animate-pulse'); // หยุด animation ก่อน
-
-                let costPrice = parseFloat(costPriceInput.value);
-
-                // ตรวจสอบว่าราคาทุนยาที่ป้อนเข้ามาเป็นตัวเลขที่ถูกต้องหรือไม่
-                if (isNaN(costPrice) || costPrice < 0) {
-                    reimbursementPriceDisplay.textContent = '--';
-                    errorMessageDisplay.classList.remove('hidden');
-                    return;
-                }
-
-                let C4; // ตัวแปร C4 แทนราคาต้นทุนที่รวม VAT แล้ว
-
-                // กำหนดค่า C4 ตามประเภทราคาที่ผู้ใช้เลือก
-                if (excludeVatRadio.checked) {
-                    C4 = costPrice * 1.07; // ถ้าป้อนราคาไม่รวม VAT ให้คำนวณรวม VAT 7%
-                } else {
-                    C4 = costPrice; // ถ้าป้อนราคารวม VAT แล้ว ใช้ค่านั้นโดยตรง
-                }
-
-                let reimbursementValue; // ตัวแปรสำหรับเก็บค่าราคาเบิกจ่ายที่คำนวณได้
-
-                /**
-                 * ฟังก์ชันช่วยคำนวณค่าพื้นฐาน (ส่วนที่ซ้ำกันในสูตร Excel)
-                 * @param {number} val ค่า C4 ที่ใช้ในการคำนวณ
-                 * @returns {number} ค่าพื้นฐานที่ได้จากการคำนวณ
-                 */
-                function calculateBaseValue(val) {
-                    if (val <= 0.2) {
-                        return 0.5;
-                    } else if (val <= 0.5) {
-                        return 1;
-                    } else if (val <= 1) {
-                        return 1.5;
-                    } else {
-                        // สูตร 1.5 + 1.25*(C4-1) สำหรับค่า C4 > 1
-                        return 1.5 + 1.25 * (val - 1);
-                    }
-                }
-
-                // คำนวณค่าพื้นฐาน
-                const baseVal = calculateBaseValue(C4);
-
-                // ตรวจสอบช่วงค่าของ C4 เพื่อกำหนดเงื่อนไขการปัดเศษ (CEILING)
-                if (C4 <= 1) {
-                    // ถ้า C4 น้อยกว่าหรือเท่ากับ 1 ไม่มีการปัดเศษด้วย CEILING
-                    reimbursementValue = baseVal;
-                } else if (C4 <= 10) {
-                    // ถ้า C4 อยู่ในช่วง (1, 10] ปัดเศษขึ้นเป็นทวีคูณของ 0.25
-                    // Math.ceil(x / significance) * significance เพื่อจำลอง CEILING(x, significance)
-                    reimbursementValue = Math.ceil(baseVal / 0.25) * 0.25;
-                } else if (C4 <= 100) {
-                    // ถ้า C4 อยู่ในช่วง (10, 100] ปัดเศษขึ้นเป็นทวีคูณของ 0.5
-                    reimbursementValue = Math.ceil(baseVal / 0.5) * 0.5;
-                } else {
-                    // ถ้า C4 มากกว่า 100 ปัดเศษขึ้นเป็นทวีคูณของ 1
-                    reimbursementValue = Math.ceil(baseVal / 1) * 1;
-                }
-
-                // แสดงผลลัพธ์โดยกำหนดทศนิยม 2 ตำแหน่ง
-                reimbursementPriceDisplay.textContent = reimbursementValue.toFixed(2);
-                reimbursementPriceDisplay.classList.add('animate-pulse'); // เพิ่ม animation กลับเข้ามา
+            // Logic to determine the base cost for calculation
+            if (!isNaN(costWithVat) && costWithVat > 0) {
+                costA12 = costWithVat;
+                // Clear the other field to avoid confusion
+                costNoVatInput.value = '';
+            } else if (!isNaN(costNoVat) && costNoVat > 0) {
+                costA12 = costNoVat * 1.07;
+                // Display the calculated VAT-inclusive price
+                costWithVatInput.value = costA12.toFixed(4); 
+            } else {
+                alert("กรุณาป้อนราคาต้นทุนในช่องใดช่องหนึ่ง");
+                return;
             }
-        });
+
+            let finalPrice = 0;
+
+            // Custom CEILING function equivalent to Excel's
+            function ceiling(number, significance) {
+                if (significance === 0) return 0;
+                return Math.ceil(number / significance) * significance;
+            }
+
+            // The main calculation logic based on the provided Excel formula
+            if (costA12 <= 0.2) {
+                finalPrice = 0.5;
+            } else if (costA12 <= 0.5) {
+                finalPrice = 1;
+            } else if (costA12 <= 1) {
+                finalPrice = 1.5;
+            } else if (costA12 <= 10) {
+                finalPrice = ceiling(1.5 + 1.25 * (costA12 - 1), 0.25);
+            } else if (costA12 <= 100) {
+                 finalPrice = ceiling(1.5 + 1.25 * (costA12 - 1), 0.5); // Note: using the formula as provided
+            } else if (costA12 <= 1000) {
+                finalPrice = ceiling(126 + 1.15 * (costA12 - 100), 0.5);
+            } else { // costA12 > 1000
+                finalPrice = ceiling(1161 + 1.1 * (costA12 - 1000), 1);
+            }
+            
+            // Display the result
+            document.getElementById('final-price').innerText = finalPrice.toFixed(2) + ' บาท';
+            document.getElementById('result-display').style.display = 'block';
+        }
     </script>
+
 </body>
 </html>
